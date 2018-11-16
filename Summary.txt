@@ -1,0 +1,10 @@
+--->P8, 26. Remove Duplicates from Sorted Array
+way 1:
+	two pointers:
+	a. check if the array is empty
+	b. ++index 永远都是新array的size
+way 2:
+	使用STL
+	distance( InputIt first, InputIt last ); //The number of increments needed to go from first to last. The value may be negative if random-access iterators are used and first is reachable from last 
+	std::unique(v.begin(), v.end()); //std::unique is used to replaced duplicates of any element present consecutively in a range[first, last) by garbage and return the last valid iterator. unique(...) does not remove duplicates, instead the duplicates are replaced by *** garbage, so we need to resize it after "unique" it. 
+
