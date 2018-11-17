@@ -35,6 +35,13 @@ way 1:
 	把之前nums[first]<=nums[mid]拆成两个条件：
 	nums[first]<nums[mid]： 单调递增
 	nums[first]==nums[mid]： 增加first++ 判断下一个
+--->p13, #4. Median of Two Sorted Arrays
+	see reference, 对比 A[k/2-1] and B[k/2-1], 然后把小于的那部分array A 或 B [0:k/2-1]删除
+	if (total & 0X1) // It's doing a bitwise AND on the least-significant bit of "total". If it returns true (ie, that bit is set), then thenumber is odd. Otherwise, it's even. e.g. (5) 0101 & 0001 == 1 (odd, true); (6) 0110 & 0001 == 0 (even, false)
+	递归中介的三种情况：m>n; m==0空集；k==1;
+	divide k into two parts: 
+	int ia = min(k / 2, m), ib = k - ia;
+	A[ia-1]<B[ib-1]; >; == 
 
 
 
