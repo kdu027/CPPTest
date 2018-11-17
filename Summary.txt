@@ -59,6 +59,14 @@ way1:
 	7. inside mergeCluster(map, left, right) //to caculate the smallest and the largest number in this consecutive sequence
 	int upper = right + map[right] - 1;
 	int lower = left - map[left] + 1;
+--->p16, #1. Two Sum
+way2: hash table 
+	1. unordered_map <int, int> map=>[value, index]
+	2. for loop to iterate each element and use target-nums[i] to caculate the gap
+	3. find the gap in the map && map[gap] > i
+	4. if find it, return the index i and map[gap] and break it
+
+
 
 
 
