@@ -1,4 +1,4 @@
---->P8, 26. Remove Duplicates from Sorted Array
+--->P8, #26. Remove Duplicates from Sorted Array
 way 1:
 	two pointers:
 	a. check if the array is empty
@@ -7,4 +7,34 @@ way 2:
 	使用STL
 	distance( InputIt first, InputIt last ); //The number of increments needed to go from first to last. The value may be negative if random-access iterators are used and first is reachable from last 
 	std::unique(v.begin(), v.end()); //std::unique is used to replaced duplicates of any element present consecutively in a range[first, last) by garbage and return the last valid iterator. unique(...) does not remove duplicates, instead the duplicates are replaced by *** garbage, so we need to resize it after "unique" it. 
+Way 3: 
+	P9, 代码3 用upper_bound(first, last, *first) to return the 1st element which is greater than "first" and then assign it to the first because the elements have been sorted, so the duplicated can be skipped. Assign all new "first" to the new output array//It returns an iterator pointing to the first element in the range [first, last) that is greater than value, or last if no such element is found. The elements in the range shall already be sorted or at least partitioned with respect to val.
+--->P9, #80.  Remove Duplicates from Sorted Array II
+way 1: 
+	可改变index and i initial value to change the max allowed repeat times: index 和i的initial value 都是一样的， 2开始，记录新array的（最后一个element位置-1)， i也从2开始知道array.size，和当前array的(index-2) 对比. 注意这里的index直接return，不需要加减，这时index=size of array 因为index从0开始，所以本来就比size of array少一个，最后++正好补上
+way 2:
+	邻近三个数相比较，如果一样就不让index增加，index永远指在可能要被替代的下一个数上
+	"continue" forces the next iteration of the loop to take place
+--->P11, #33 Search in Rotated Sorted Array
+way 1: 
+	Binary search
+	1.if nums[first]<=nums[mid],那么first to mid will be monotonically increasing(单调递增) and nums[first]<=target<nums[mid]: search 前半段 last=mid,不然search后半段 first = mid+1
+	2. if nums[first]>nums[mid] and nums[mid]<target<=nums[last-1]: search 后半段，反之search前半段
+
+	Algorithm from GeeksForGeeks:
+	Input arr[] = {3, 4, 5, 1, 2}
+	Element to Search = 1
+	  1) Find out pivot point and divide the array in two sub-arrays. (pivot = 2) /*Index of 5*/
+	  2) Now call binary search for one of the two sub-arrays.
+	      (a) If element is greater than 0th element then search in left array
+	      (b) Else Search in right array (1 will go in else as 1 < 0th element(3))
+	  3) If element is found in selected sub-array then return index
+	     Else return -1.
+--->P12, #81 Search in Rotated Sorted Array II (allow duplicates)
+way 1: 
+	把之前nums[first]<=nums[mid]拆成两个条件：
+	nums[first]<nums[mid]： 单调递增
+	nums[first]==nums[mid]： 增加first++ 判断下一个
+
+
 
