@@ -1,3 +1,4 @@
+Chapter 2.1 数组
 --->P8, #26. Remove Duplicates from Sorted Array
 way 1:
 	two pointers:
@@ -65,7 +66,97 @@ way2: hash table
 	2. for loop to iterate each element and use target-nums[i] to caculate the gap
 	3. find the gap in the map && map[gap] > i
 	4. if find it, return the index i and map[gap] and break it
+-->p18, #15. 3Sum
+way1: 
+	1. check nums.size() >= 3, 排序 vector
+	2. don't forgot compare if *i == *(i-1), if there is repeat elements, no need to rerun.
+	3. j<k should be a while loop inside the for loop of i instead of putting into the if statement
+	4. 最小的两个数和最后一个数相加夹击找出和等于target： sum<target=>j++; sum>target=>k--; sum=target=>push_back (*i, *j, *k)
+	5. after find sum == target, because there should not be duplicates, we increase both j and k
+	4. if下一个*j && 前一个*k 值不变 && j<k，j++
+Chapter 2.2 Linked List
+--->p46, #2. Add Two Numbers
+	Similar with --->p67, #67. Add Binary
+	self write: 
+	/**
+	 * Definition for singly-linked list.
+	 * struct ListNode {
+	 *     int val;
+	 *     ListNode *next;
+	 *     ListNode(int x) : val(x), next(NULL) {}
+	 * };
+	 */
+	class Solution {
+	public:
+	    ListNode* addTwoNumbers(ListNode* l1, ListNode* l2) {
+	        ListNode* curr1 = l1;
+	        ListNode* curr2 = l2;
+	        ListNode dummy(-1);
+	        ListNode* new_node = &dummy;
+	        int carry = 0;
+	        while (curr1 != NULL || curr2 != NULL){
+	            int r1 = (curr1 != NULL)? curr1->val : 0;
+	            int r2 = (curr2 != NULL)? curr2->val : 0;
+	            int sum = (r1+r2+carry)%10;
+	            carry = (r1+r2+carry)/10;
+	            new_node->next = new ListNode(sum);
+	            new_node = new_node->next;
+	            if (curr1 != NULL) curr1 = curr1->next;
+	            if (curr2 != NULL) curr2 = curr2->next;
+	        }
+	        if (carry>0) new_node->next = new ListNode(carry);
+	        return dummy.next;
+	    }
+	};
+-->p47, #92. Reverse Linked List II
+Way1: (failed)
+	1. Find the address of start and end position of the lined list by running a loop
+	2. Unlink this part from the rest of the list 
+	3. use the normal liked list reverse function
+	4. attached the portion reversed to the main 
+Way2: 
+	1. find the mth node position
+	for(int i=1; i<m; i++)
+	2. reverse it from m to n (need prev [Node *prev], curr [Node *curr], node before reversed starting point [Node **head]
+	3. return
 
+	similar easy: #206. Reverse Linked List: 
+	public:
+    ListNode* reverseList(ListNode* head) {
+    if (head == NULL || head->next == NULL) return head;
+    ListNode* p = reverseList(head->next);
+    head->next->next = head;
+    head->next = NULL;
+    return p;
+    }
+--->p56, #138. (DeepCopy)Copy List with Random Pointer:
+	Deep copy:(pointers must not be copied, in deep copy, we are copying the entire object,  creating a new pointer pointing to the new memory address, never copy the pointer! Using “new” to create a new pointer and store the dereferenced data of the old pointer to this new pointer with new memory address. We can not simply copy the pointer using “=”.
+Way1: 
+	Method 2 (Uses Constant Extra Space)
+	Thanks to Saravanan Mani for providing this solution. This solution works using constant space.
+	1) Create the copy of node 1 and insert it between node 1 & node 2 in original Linked List, create the copy of 2 and insert it between 2 & 3.. Continue in this fashion, add the copy of N afte the Nth node
+	2) Now copy the arbitrary link in this fashion
+	     original->next->arbitrary = original->arbitrary->next;  /*TRAVERSE 
+	TWO NODES*/ Need to check if the random pointer is NULL
+	This works because original->next is nothing but copy of original and Original->arbitrary->next is nothing but copy of arbitrary.
+	3) Now restore the original and copy linked lists in this fashion in a single loop.
+	     original->next = original->next->next;
+	     copy->next = copy->next->next;
+	4) Make sure that last element of original->next is NULL.
+Chapter 3 Strings
+--->p67, #67. Add Binary
+	size_t: represent the size of any object in bytes.
+	Algorithm: Carry （用reminder） 和那一位的digit（结果除以2--如果是binary）结果要注意 The idea is to start from last characters of two strings and compute digit sum one by one. If sum becomes more than 1, then store carry for next digits.
+	1. check the size of the longest string
+	2. reverse the string OR for loop starting from i=size-1 and i>=0 || j>=0
+	3. compare each digit sum with "0" ASCII value
+	4. calcualte digit of the result and the carry in each final digit
+	5. check if there is carry in the MSB
+	sum%2=1 可以判断哪个digit是1(odd)
+	sum/2=1 可以判断有carry 1(sum= 2 或者 3)
+	Have to match the format when we use insert method in string: 
+	string.insert(a.begin, 'char')
+	string.insert(0, "string2")
 
 
 

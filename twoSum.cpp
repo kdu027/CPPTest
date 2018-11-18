@@ -1,38 +1,64 @@
-// C++ program to demonstrate iterators
-
+#include <stdio.h>
+#include <stdlib.h>
+#include <string>
 #include <iostream>
 #include <vector>
-#include <string>
+#include <sstream>
 using namespace std;
+// Definition for singly-linked list.
+ struct ListNode {
+     int val;
+     ListNode *next;
+     ListNode(int x) : val(x), next(NULL) {}
+ };
+
 class Solution {
 public:
-    double findMedianSortedArrays(std::vector<int>& nums1, std::vector<int>& nums2) {
-        const int m = nums1.size();
-        const int n = nums2.size();
-        int total = m+n;
-        if (total & 0X1) //if it is odd
-        {
-            return findKthValue(nums1.begin(), m, nums2.begin(), n, (total+1)/2);
-        } else { //if it is even
-            return (findKthValue(nums1.begin(), m, nums2.begin(), n, total/2)+findKthValue(nums1.begin(), m, nums2.begin(), n, (total/2)+1))/2.0;
+    ListNode* reverseBetween(ListNode* head, int m, int n) {
+        // assume m<n
+        if (m==n) return head;
+        if (m>n) return reverseBetween(head, n, m);
+        // revs and revend is start and end respectively
+        // of the portion of the linked list which
+        // need to be reversed. revs_prev is previous
+        // of starting position and revend_next is next
+        // of end of list to be reversed.
+        ListNode* revs = NULL, *revs_prev = NULL;
+        ListNode* revend = NULL, *revend_next = NULL;
+        ListNode* curr=head;
+        for (int i=1;i<=n; i++){
+            if (!curr) break;
+            if (i == m-1) revs_prev = curr;
+            if (i == m) revs = curr;
+            if (i == n) {
+                revend = curr;
+                revend_next = curr->next;
+            }
+            curr = curr->next;
         }
+        revend->next = NULL;
+        // ListNode* new_head = reverseList(revs);
+        print(revs);
+        return revs;
     }
 private:
-    static int findKthValue(std::vector<int>::const_iterator A,int m, std::vector<int>::const_iterator B, int n, int k){
-        if (m > n) findKthValue(B,n,A,m,k);
-        if (m == 0) return *(B+k-1);
-        if (k == 1) return std::min (*A, *B);
-        int ia = std::min (k/2, m), ib = k-ia;
-        if (*(A+ia-1) < *(B+ib-1)){
-            return findKthValue((A+ia),m-ia,B,n,k-ia);
-        } else if (*(A+ia-1) > *(B+ib-1)){
-            return findKthValue(A,m,(B+ib),n-ib,k-ib);
-        } else {
-            return *(A+ia-1);
+    void print(ListNode* head)
+    {
+        while (head != NULL) {
+            printf("%d ", head->val);
+            head = head->next;
         }
+        printf("\n");
+    }
+    
+    ListNode* reverseList(ListNode* head) {
+        if (head == NULL || head->next == NULL) return head;
+        ListNode* p = reverseList(head->next);
+        head->next->next = head;
+        head->next = NULL;
+        return p;
     }
 };
-
 void trimLeftTrailingSpaces(string &input) {
     input.erase(input.begin(), find_if(input.begin(), input.end(), [](int ch) {
         return !isspace(ch);
@@ -60,16 +86,51 @@ vector<int> stringToIntegerVector(string input) {
     return output;
 }
 
+ListNode* stringToListNode(string input) {
+    // Generate list from the input
+    vector<int> list = stringToIntegerVector(input);
+    
+    // Now convert that list into linked list
+    ListNode* dummyRoot = new ListNode(0);
+    ListNode* ptr = dummyRoot;
+    for(int item : list) {
+        ptr->next = new ListNode(item);
+        ptr = ptr->next;
+    }
+    ptr = dummyRoot->next;
+    delete dummyRoot;
+    return ptr;
+}
+
+int stringToInteger(string input) {
+    return stoi(input);
+}
+
+string listNodeToString(ListNode* node) {
+    if (node == nullptr) {
+        return "[]";
+    }
+    
+    string result;
+    while (node) {
+        result += to_string(node->val) + ", ";
+        node = node->next;
+    }
+    return "[" + result.substr(0, result.length() - 2) + "]";
+}
+
 int main() {
     string line;
     while (getline(cin, line)) {
-        vector<int> nums1 = stringToIntegerVector(line);
+        ListNode* head = stringToListNode(line);
         getline(cin, line);
-        vector<int> nums2 = stringToIntegerVector(line);
+        int m = stringToInteger(line);
+        getline(cin, line);
+        int n = stringToInteger(line);
         
-        double ret = Solution().findMedianSortedArrays(nums1, nums2);
+        ListNode* ret = Solution().reverseBetween(head, m, n);
         
-        string out = to_string(ret);
+        string out = listNodeToString(ret);
         cout << out << endl;
     }
     return 0;
