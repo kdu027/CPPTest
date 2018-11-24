@@ -50,7 +50,8 @@ way1:
 	1. length 从1开始！
 	2. 在for loop中不能忘了把当前iterator变成true！for loop 中ending注意条件是return的pointer不是used.end()，如果没找到就return null pointer
 	3. 从i向前/后找连续的下一个数,一个一个iterate，同时把iterator过得used[i]变true
-!!!Review way2:
+(TODO: Review)
+way2:
 	1. create unordered_map<int, int> map to store nums
 	2. length is also starting from 1
 	3. for loop to iterate every element in the nums
@@ -74,6 +75,7 @@ way1:
 	4. 最小的两个数和最后一个数相加夹击找出和等于target： sum<target=>j++; sum>target=>k--; sum=target=>push_back (*i, *j, *k)
 	5. after find sum == target, because there should not be duplicates, we increase both j and k
 	4. if下一个*j && 前一个*k 值不变 && j<k，j++
+
 Chapter 2.2 Linked List
 --->p46, #2. Add Two Numbers
 	Similar with --->p67, #67. Add Binary
@@ -129,6 +131,63 @@ Way2:
     head->next = NULL;
     return p;
     }
+
+--->p48, #86. Partition List
+	1. create two dummy linked list left and right;
+	2. add node to left dummy if curr<x; add node to right dummy if curr>=x
+	3. left_curr->next= right_dummy.next; right_curr->next = null;
+	4. return left_dummy.next
+-->p49, #83. Remove Duplicates from Sorted List
+way1:
+	1. Don't forget the head may be NULL 
+	2. create a new head2 (val = head->val -1 只要跟head不同即可) with head2->next = head
+	3. input new head2 and head as prev and curr into another function A
+	4. in that function A, 判断邻近两个node是否value相同，如果相同: prev->next = curr->next; delete curr; recursion A(prev, prev->next);
+	5. return head2->next or dummy.next
+	***key point****
+	if adjacent nodes have same value, first node->next = second node->next; delete the second repeat node; compare first node with the third node; 
+	if they are different, first node move to next and second move to the next. 
+--->p50, #82. Remove Duplicates from Sorted List II
+Way1: (Recurrsion)
+	1. make sure there are more than 1 nodes to compare
+	2. check if the two adjacent nodes are same
+	3. if they are equal, using while loop to continue to check if the rest has the same node and delete each node and delete head after while 
+	4. use p as the head and input into the recurrsion function (if head was delete, return the recurrsion results, otherwise, return head and head->next = recurrsion results)
+--->p52, #61. Rotate List
+	1. connect the head and the tail so that it is a cycle linked list and get the length
+	2. continue to traverse the length-k node and at (length-k)->next=NULL and (length-k+1) 注意求新k的顺序，不要放错了
+	3. put new head to here
+--->p53, #19. Remove Nth Node From End of List
+	1. use two pointers, p and q, where position q is n nodes away from p
+	2. q 先走n个node，然后p和q一起走
+--->p54, #24. Swap Nodes in Pairs
+	1. check if there are two nodes in this linked list
+	2. create dummy node and dummy.next = head
+	3. traverse the list with 3 pointers: prev=&dummy, curr=dummy.next, next=curr->next
+	4. do the swap of two adjacent node "curr" and "next": 
+	prev->next = next;
+	cur->next = next->next;
+	next->next = cur;
+	5. return dummy.next
+--->no page, #328. Odd Even Linked List
+	Put the odd nodes in a linked list and the even nodes in another. Then link the evenList to the tail of the oddList.
+--->p55, #25. Reverse Nodes in k-Group
+	Algorithm: reverse(head, k)
+	1) Reverse the first sub-list of size k. While reversing keep track of the next node and previous node. Let the pointer to the next node be next and pointer to the previous node be prev. See this post for reversing a linked list.
+	2) head->next = reverse(next, k) /* Recursively call for rest of the list and link the two sub-lists */
+	3) return prev /* prev becomes the new head of the list (see the diagrams of iterative method of this post) */
+way1: iterator(works)
+	1. check k value <=1 or NULL return;
+	2. traverse k node if len>=k and curr != NULL
+	3. when it reached the kth node, reconnect the previous list and the rest of the list: 
+		prev_list->next = prev;
+        prev_list = head;
+        head = curr;
+        prev = NULL;
+        len -= k;
+    4. if (len != 0) prev_list->next = head; else =prev;
+TODO:
+way2: recurrsion 
 --->p56, #138. (DeepCopy)Copy List with Random Pointer:
 	Deep copy:(pointers must not be copied, in deep copy, we are copying the entire object,  creating a new pointer pointing to the new memory address, never copy the pointer! Using “new” to create a new pointer and store the dereferenced data of the old pointer to this new pointer with new memory address. We can not simply copy the pointer using “=”.
 Way1: 
@@ -143,6 +202,78 @@ Way1:
 	     original->next = original->next->next;
 	     copy->next = copy->next->next;
 	4) Make sure that last element of original->next is NULL.
+--->p58, #141. Linked List Cycle
+	Two points: slow and fast
+	slow = slow-next;
+	fast = fast->next->next
+	if slow == fast, there is a cycle
+--->p59, #142. Linked List Cycle II (detect cycle and find the entry point)
+way1: hashtable
+	the very first node whose next is already visited (or hashed) is the last node.
+way2: Floyd's cycle-finding algorithm: If there is a cycle, then, for any integers i ≥ μ and k ≥ 0, xi = xμ + kλ, where λ is the length of the loop to be found and μ is the index of the first element of the cycle.
+	x = (n − 1)r + (L–x–a) 
+	1. check if it include cycle and find the meeting point
+	2. add another pointer from head and traverse the linked list
+	3. the distance from head to the entry point of the cycle =meeting point to entry point of the cycle + multiple of cycles; 
+	4. slow2 and slow will finally meet at the entry point
+--->p60, #143. Reorder List
+way1: 
+	Need reverse and merge
+	1. find the middle part (partition)
+		prev = slow;
+		slow = slow->next;
+		fast = fast->next->next;
+		slow is the always the middle node
+	2. break the middle node and reverse() the later part
+	3. merge() the two linked list
+(TODO: review)
+--->p61, #146. LRU Cache
+	hashTable is for saving each node，方便查找
+	double linked list saved the order of the nodes (queue)，方便记录谁是Lease used node
+	hashTable 和 double linked list node顺序 无任何关系
+	LRU: 
+	In case of LRU cache we evict least recently used entry so we have to keep track of recently used entries, entries which have not been used from long time and which have been used recently. plus lookup and insertion operation should be fast enough.
+
+	When we think about O(1) lookup , obvious data structure comes in our mind is HashMap. HashMap provide O(1) insertion and lookup. but HashMap does not has mechanism of tracking which entry has been queried recently and which not.
+
+	To track this we require another data-structure which provide fast insertion ,deletion and updation , in case of LRU we use Doubly Linkedlist . Reason for choosing doubly LinkList is O(1) deletion , updation and insertion if we have the address of Node on which this operation has to perform.
+	**why we use hashtable: O(1) and doubly linked list is easy for deletion and insertion.
+	In Which HashMap will hold the keys and address of the Nodes of Doubly LinkedList . And Doubly LinkedList will hold the values of keys.
+way1: 
+	need the following function
+	1. addHead;
+	2. remove;
+	3. move to head-->remove+addHead, 顺序不能颠倒
+	4. popTail->to evict least recently used entry
+	5. put->need to check the capacity after add new node
+--->#114. Flatten Binary Tree to Linked List
+	Recursively look for the node with no grandchildren and both left and right child in the left sub-tree. Then store node->right in temp and make node->right=node->left. Insert temp in first node NULL on right of node by node=node->right. Repeat until it is converted to linked list.
+		1			  1           1       1
+	   /  \		    /   \          \       \
+	  2    6  =>    2    6  =>      2  =>   2
+	 / \  / \        \  / \          \       \
+	3   4 5  7        3 5  7          3       3
+	                   \               \       \
+	                    4               4       4
+	                                     \       \
+	                                      6       6
+	                                     / \       \
+	                                    5   7       5
+	                                                 \
+	                                                  7
+	1. check if root, root->left, and root->right are not null
+	2. flat left part using recursive function (inorder)
+	3. store the original right branch node
+	4. move the left node to the root->right
+	5. find the tail of the new right branch and add the original right branch to the tail
+	6. flat the right side of the branch, treat it as a new root of a binary tree
+--->#707. Design Linked List
+	(TODO: Need to review!)
+
+
+
+????-->TODO,#599. Minimum Index Sum of Two Lists
+
 Chapter 3 Strings
 --->p67, #67. Add Binary
 	size_t: represent the size of any object in bytes.
@@ -157,9 +288,129 @@ Chapter 3 Strings
 	Have to match the format when we use insert method in string: 
 	string.insert(a.begin, 'char')
 	string.insert(0, "string2")
+Chapter 5 Binary tree
+--->5.3.5 p119, #109. Convert Sorted List to Binary Search Tree
+(review way 2)
+way1:
+	contruct tree in preorder (from root to leaves)
+	1) Get the Middle of the linked list and make it root.
+	2) Recursively do same for left half and right half.
+       a) Get the middle of left half and make it left child of the root
+          created in step 1.
+       b) Get the middle of right half and make it right child of the
+          root created in step 1.
+way2: bottom to up (先从最左边的node开始组建，然后一步一步建起root和右边node，注意在建立右边node时可能又会掉入建立right->left->left node的recursive中)
+	contruct tree in inorder (from bottom to the top) 
+	1. count the total number of nodes
+	2. input into the sort function (head, size), The function formal parameter is "ListNode *& head"
+	(int*&  value这样一个声明，我们从最接近value的符号看起，是个&，说明value是一个引用，它是一个什么引用呢？再看*，它是一个指针的引用，即指针的别名，我们用*value就可以访问到实参的值了。所以，其交换函数的内部逻辑跟int *是一样的。)
+	3. find left;
+	4. create new root node 
+	5. head = head->next
+	6. find right(head)
+	7. return root
+Chapter 6 Sorting
+--->6.1 p129, #88. Merge Sorted Array
+	Add the value from the end of the array A
+--->6.2 p130, #21. Merge Two Sorted Lists
+	1. compare each node of l1 and l2
+	2. add the rest of l1 or l2 to the new list
+--->#617. Merge Two Binary Trees (recursion)
+	1. check tree1, if NULL, return tree2;
+	2. check tree2, if NULL, return tree1;
+	3. compare which node is larger
+--->6.3 p130, #23. Merge k Sorted Lists
+	Binary division method
+--->6.4 p132, #147. Insertion Sort List
+	If we pass a linked list node into a function, the node->next needs to be saved because it may be changed inside the function.
+	1) Create an empty sorted (or result) list
+	2) Traverse the given list, do following for every node.
+	......a) Insert current node in sorted way in sorted or result list.
+	3) Change head of given linked list to head of sorted (or result) list.
+--->6.5 p132, #148. Sort List
+	常数空间且O(nlogn),singly-linked list 适合用merge sort, doubly-linked list 适合 Quick Sort
+	
+	MergeSort(headRef)
+	How to find the middle point: 
+	1. find the middle part (partition)
+		prev = slow;
+		slow = slow->next;
+		fast = fast->next->next;
+		slow is the always the middle node
+	2. break the middle node and reverse() the later part
+	3. merge() the two linked list
 
+	1) If head is NULL or there is only one element in the Linked List 
+	    then return.
+	2) Else divide the linked list into two halves.  
+	      FrontBackSplit(head, &a, &b); /* a and b are two halves */
+	3) Sort the two halves a and b.
+	      MergeSort(a);
+	      MergeSort(b);
+	4) Merge the sorted a and b (using SortedMerge() discussed here) 
+	   and update the head pointer using headRef.
+	     *headRef = SortedMerge(a, b);
+	
+	QuickSort(doubly linked list)
+	1. find the pointer to the last node
+	2. put the first and last node into the quicksort to do recursion
+	3. partition returned the middle node/pivot node, parition include the sorting algorithm (last one as target, pivot as the first sorted one, and then compare each node with target, if < target, put it to pivot and pivot = pivot->next, where pivot always points to the first unsorted node)
+	4. recursivly input the returned middle-1 and middle+1 into the next partition function (don't put the middle one again) 
 
+--->6.6 p134, #41. First Missing Positive
+way 1:
+	1) Segregate positive numbers from others i.e., move all non-positive numbers to left side. In the following code, segregate() function does this part. // Utility function that puts all non-positive (0 and negative) numbers on left  
+side of arr[] and return count of such numbers
+	2) Now we can ignore non-positive elements and consider only the part of array which contains all positive elements. (Find the smallest positive missing number in an array that contains all positive integers.)
+	3) We traverse the array containing all positive numbers and to mark presence of an element x, we change the sign of value at index x to negative. Mark arr[i] as visited by making arr[arr[i] - 1] negative //Note that 1 is subtracted because index start from 0 and positive numbers start from 1.
+	4) We traverse the array again and print the first index which has positive value. Return the first index value at which is positive.
+way2: 
+	BucketSort(arr[], n)
+	1) Create n empty buckets (Or lists).
+	2) Do following for every array element arr[i].
+	.......a) Insert arr[i] into bucket[n*array[i]]
+	3) Sort individual buckets using insertion sort.
+	4) Concatenate all sorted buckets.
 
+--->***Find the duplicates in an array. 
+	Algorithm:
+Way1:
+	Traverse the list for i=0 to n-1 elements
+	{
+		check for sign of A[abs(A[i])];
+		if positive then
+			make it negative by A[abs(A[i])=-A[abs(A[i])]]
+	}
+Way2: 
+	1- Traverse the given array from i= 0 to n-1 elements
+    2- Go to index arr[i]%n and increment its value by n. (because arra[index] will add multiple of n, so the reminder will be its' original value)
+	3- Now traverse the array again and print all those 
+	   indexes i for which arr[i]/n is greater than 1, which means this i index was access more than once. i is the repeated index number. (because this index i was access twice, so we return i to say this value has repeated)
+
+	This approach works because all elements are in range
+	from 0 to n-1 and arr[i]/n would be greater than 1
+	only if a value "i" has appeared more than once.
+--->***Calculate XOR from 1 to n. 
+	Method 2 (Efficient method) :
+	1- Find the remainder of n by moduling it with 4 (we can n&3 which is equivalent to n%4).
+	2- If rem = 0, then xor will be same as n.
+	3- If rem = 1, then xor will be 1.
+	4- If rem = 2, then xor will be n+1.
+	5- If rem = 3 ,then xor will be 0.
+	
+	Number Binary-Repr  XOR-from-1-to-n
+	1         1           [0001]
+	2        10           [0011]
+	3        11           [0000]  <----- We get a 0
+	4       100           [0100]  <----- Equals to n
+	5       101           [0001]
+	6       110           [0111]
+	7       111           [0000]  <----- We get 0
+	8      1000           [1000]  <----- Equals to n
+	9      1001           [0001]
+	10     1010           [1011]
+	11     1011           [0000] <------ We get 0
+	12     1100           [1100] <------ Equals to n
 
 
 
