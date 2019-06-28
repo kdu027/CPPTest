@@ -2,30 +2,30 @@
 class Solution {
 public:
     vector<vector<int>> threeSum(vector<int>& nums) {
-        int target = 0;
-        vector<vector<int>> result;
-        // check if the total number is < 3
-        int size = nums.size();
-        if (size<3) return result;
-        //sort the vector
+       vector<vector<int>> result;
+        // confirm the size
+        if (nums.size() < 3) return result;
         sort(nums.begin(), nums.end());
-        for (int i = 0; i<size; i++){
-            //if adjacent numbers are same
-            if (i>0 && nums[i] == nums[i-1]) continue;
-            int j = i+1;
-            int k = size - 1;
-            while(j<k){
-                if (nums[i] + nums[j] + nums[k] < target){
-                    j++;
-                    while(nums[j] == nums[j-1]) j++;
-                } else if (nums[i] + nums[j] + nums[k] > target){
-                    k--;
-                    while(nums[k] == nums[k+1]) k--;
-                } else {
-                    result.push_back({nums[i], nums[j], nums[k]});
-                    j++;
-                    k--;
-                    while (nums[j] == nums[j-1] && nums[k] == nums[k+1] && j<k) j++; //remember j<k is necessary!
+        const int target = 0;
+        
+        for (auto i=nums.begin(); i!= nums.end(); ++i){
+            if(i>nums.begin() && *(i-1) == *i) continue;
+            auto j = i+1, k = nums.end()-1;
+            while (j<k){
+                if(*i + *j + *k < target){
+                    do{
+                        ++j;
+                    }while(*j == *(j-1) && j<k);
+                } else if (*i + *j + *k >target){
+                    do{
+                        --k;
+                    }while(*k == *(k+1) && j<k);
+                } else{
+                        result.push_back({*i, *j, *k});
+                    do{
+                        ++j;
+                        --k;
+                    }while(*j == *(j-1) && *k == *(k+1) && j<k);
                 }
             }
         }

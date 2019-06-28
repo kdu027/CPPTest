@@ -7,21 +7,29 @@ way 1:
 way 2:
 	使用STL
 	distance( InputIt first, InputIt last ); //The number of increments needed to go from first to last. The value may be negative if random-access iterators are used and first is reachable from last 
-	std::unique(v.begin(), v.end()); //std::unique is used to replaced duplicates of any element present consecutively in a range[first, last) by garbage and return the last valid iterator. unique(...) does not remove duplicates, instead the duplicates are replaced by *** garbage, so we need to resize it after "unique" it. 
+	std::unique(v.begin(), v.end()); //std::unique is used to replaced duplicates of any element present consecutively in a range[first, last) by the next element present in the sequence which is not duplicate to the current element being replaced. The rest of the empty space at the end of the list will be filled by garbage and return the last valid iterator. unique(...) does not remove duplicates, instead the duplicates are replaced by *** garbage, so we need to resize it after "unique" it. 
 Way 3: 
 	P9, 代码3 用upper_bound(first, last, *first) to return the 1st element which is greater than "first" and then assign it to the first because the elements have been sorted, so the duplicated can be skipped. Assign all new "first" to the new output array//It returns an iterator pointing to the first element in the range [first, last) that is greater than value, or last if no such element is found. The elements in the range shall already be sorted or at least partitioned with respect to val.
+--->***Added:#27. Remove Element
+	--Hints
+	Try two pointers.
+	Did you use the property of "the order of elements can be changed"?
+	What happens when the elements to remove are rare?
+
 --->P9, #80.  Remove Duplicates from Sorted Array II
 way 1: 
-	可改变index and i initial value to change the max allowed repeat times: index 和i的initial value 都是一样的， 2开始，记录新array的（最后一个element位置-1)， i也从2开始知道array.size，和当前array的(index-2) 对比. 注意这里的index直接return，不需要加减，这时index=size of array 因为index从0开始，所以本来就比size of array少一个，最后++正好补上
+	可改变index and i initial value to change the max allowed repeat times: index 和i的initial value 都是一样的， 从2开始，记录新array的（最后一个element位置-1)， i也从2开始知道array.size，和当前array的(index-2) 对比. 注意这里的index直接return，不需要加减，这时index=size of array 因为index从0开始，所以本来就比size of array少一个，最后++正好补上
 way 2:
 	邻近三个数相比较，如果一样就不让index增加，index永远指在可能要被替代的下一个数上
 	"continue" forces the next iteration of the loop to take place
+Similar one: 
+**** Need to review #873. Length of Longest Fibonacci Subsequence 
 --->P11, #33 Search in Rotated Sorted Array
 way 1: 
 	Binary search
 	1.if nums[first]<=nums[mid],那么first to mid will be monotonically increasing(单调递增) and nums[first]<=target<nums[mid]: search 前半段 last=mid,不然search后半段 first = mid+1
 	2. if nums[first]>nums[mid] and nums[mid]<target<=nums[last-1]: search 后半段，反之search前半段
-
+way 2:
 	Algorithm from GeeksForGeeks:
 	Input arr[] = {3, 4, 5, 1, 2}
 	Element to Search = 1
@@ -31,21 +39,25 @@ way 1:
 	      (b) Else Search in right array (1 will go in else as 1 < 0th element(3))
 	  3) If element is found in selected sub-array then return index
 	     Else return -1.
+1/19/2019
 --->P12, #81 Search in Rotated Sorted Array II (allow duplicates)
 way 1: 
 	把之前nums[first]<=nums[mid]拆成两个条件：
 	nums[first]<nums[mid]： 单调递增
 	nums[first]==nums[mid]： 增加first++ 判断下一个
-!!!Review--->p13, #4. Median of Two Sorted Arrays
+--->p13, #4. Median of Two Sorted Arrays (!!!Review)
 	see reference, 对比 A[k/2-1] and B[k/2-1], 然后把小于的那部分array A 或 B [0:k/2-1]删除
 	if (total & 0X1) // It's doing a bitwise AND on the least-significant bit of "total". If it returns true (ie, that bit is set), then thenumber is odd. Otherwise, it's even. e.g. (5) 0101 & 0001 == 1 (odd, true); (6) 0110 & 0001 == 0 (even, false)
 	1. 判断total奇偶
 	2. 递归中介的三种情况：m>n; m==0空集；k==1;
 	3. divide k into two parts: 
 	int ia = min(k / 2, m), ib = k - ia;
-	A[ia-1]<B[ib-1]; >; == 
+	if A[ia-1]<B[ib-1] keep A+ia to the A.end;
+	if A[ia-1]>B[ib-1] keep B+ib to the B.end;
+	if A[ia-1]==B[ib-1] return either A[ia-1] or B[ia-1];
 --->p14, #128 Longest Consecutive Sequence
 way1:
+	用unordered_map<int, bool> used
 	让iterator和之前和之后对比是否连续 
 	1. length 从1开始！
 	2. 在for loop中不能忘了把当前iterator变成true！for loop 中ending注意条件是return的pointer不是used.end()，如果没找到就return null pointer
@@ -61,11 +73,12 @@ way2:
 	7. inside mergeCluster(map, left, right) //to caculate the smallest and the largest number in this consecutive sequence
 	int upper = right + map[right] - 1;
 	int lower = left - map[left] + 1;
+1/21/2019
 --->p16, #1. Two Sum
 way2: hash table 
 	1. unordered_map <int, int> map=>[value, index]
 	2. for loop to iterate each element and use target-nums[i] to caculate the gap
-	3. find the gap in the map && map[gap] > i
+	3. find the gap in the map && map[gap] > i (the reason why we add map[gap]>i is that otherwise the result will repeat)
 	4. if find it, return the index i and map[gap] and break it
 -->p18, #15. 3Sum
 way1: 
@@ -75,6 +88,128 @@ way1:
 	4. 最小的两个数和最后一个数相加夹击找出和等于target： sum<target=>j++; sum>target=>k--; sum=target=>push_back (*i, *j, *k)
 	5. after find sum == target, because there should not be duplicates, we increase both j and k
 	4. if下一个*j && 前一个*k 值不变 && j<k，j++
+--->p19, #16. 3Sum Closest
+	先排序，后夹逼
+	1. set up the gap to the INT_MAX
+	2. sort it 
+	3. 夹逼， a 先不动，b和c相互靠拢直到b>c为止，然后增加a重来一遍，直到travel过所有elements并且不断地记录目前最小的sum和gap
+	***binary search is much faster, not work
+1/22/2019
+--->p20, #18. 4Sum
+	1. 判断size
+	2. Sort
+	3. create a cache for temperary storage 
+	4. store all a+b to the cache as the key and pair<a,b> as the value vectors in the map 
+	5. calculate the difference between target - sum(a,b) - c - d (d=c+1 to the end 夹逼法)
+	6. 注意比较push back 到result的时候，a,b 必须必c小从而避免重叠，确保the result vector is in the increasing order
+	7. erase()//Removes from the vector either a single element (position) or a range of elements ([first,last)).
+	***注意，使用unique必须after sort, 因为它是remove consecutive redundents 
+--->p24, #27. Remove Element
+	--Hints
+	Try two pointers.
+	Did you use the property of "the order of elements can be changed"?
+	What happens when the elements to remove are rare?
+	-Two pointers method, index is tracking after remove the target value
+--->p25, #31. Next Permutation
+	思路：http://bangbingsyb.blogspot.com/2014/11/leetcode-next-permutation.html 
+
+	遇到这类概念比较抽象的题目，写几个例子通常会帮助理解问题的规律：
+
+	7 2 5 2 3 1
+	7 2 5 3 1 2
+	7 2 5 3 2 1
+	7 3 1 2 2 5
+
+	其中红色的数字表示next permutation改变原数字的最高位。比如对于725321来说，由于5321由于从最低位到最高位是升序排列，已经达到该四位数字permutation的最大值。这时不得不改变第5位的2来增加数值。如何改变？为了使增量最小，在前4位中比第5位大的数(5, 3)中找一个最小的数，即数字3。用3替换2，而剩下5, 2, 2, 1四个数字要组成最低4位。由于第5位已经从2增加到3，同样为了使增量最小，我们希望剩下的4位数尽可能小。所以将他们从低到高位降序排列即可。总结上面的思考：
+
+	1. 从低位向高位（从右向左）找第一个递减的数：s[i]<s[i+1]。如果不存在，则表明该permutation已经最大，next permutation为当前序列的逆序。
+	2. 在s[i+1:n-1]中找一个j，使s[j]>s[i]>=s[j+1]，swap(s[i], s[j])
+	3. 将s[i+1:n-1]排序，从低位到高位单调递减。
+
+	In other word: 
+	1. From right to left, find the first digit (Partition Number) which violate the increase trend, in this example, 6 will be selected since 8, 7, 4, 3, 2 already in an increase trend.
+	2. From right to left, find the first digit which larger than PartitionNumber, call it changeNumber. Here the 7 will be selected. 
+	3. Swap the PartitionNumber and ChangeNumber.
+	4. Reverse all the digit ont eh right of partion index 
+
+	注意可能有repeat number, myself answer: 
+	class Solution {
+	public:
+	    void nextPermutation(vector<int>& nums) {
+	        if(nums.size()<2) return;
+	        int j = nums.size()-2;
+	        while(j>=0 && nums[j]>=nums[j+1]) --j;
+	        if (j<0){
+	            reverse(nums.begin(), nums.end());
+	            return;
+	        }
+	        int i = nums.size()-1;
+	        while(i>j && nums[j]>=nums[i]) i--; 
+	        
+	        swap(nums[j], nums[i]);
+	        reverse(nums.begin()+j+1, nums.end());
+	        return;
+	    }
+	};
+	/*
+	    1. track the array from right to left and check if it is in ascending order and find the first one violate the increasing trend 
+	    2. if it is always in the ascending order from right to left, reverse the array
+	    3. if we find the first violate element in the array, nums[i], find the first element in nums[i+1:end] (right to left) which is greater than nums[i], let's represent it as nums[j]
+	    4. swap(nums[i] and nums[j])
+	    5. reverse(nums[i+1], end)
+	*/
+--->p27, #60. Permutation Sequence
+http://www.cnblogs.com/grandyang/p/4358678.html 
+	运用“康托编码” Cantor expansion 
+	用到的function：
+	erase (size_t pos = 0, size_t len = npos);
+	vector<int> v(N,val); // v[0:N-1] are all equal to val
+
+	1. calculate the factorial of n in an vector, i.e. f[i] = !i;
+	2. k = k-1 //because the index of the string starting from 0 instead of 1
+	3. calculate the number at the highest index based on permulation logic-->in a1 a2 a3, if a1 is fixed, the possible permutation will be a1 + Permutation{a2 a3}, i.e. !2
+	so,
+	index = k / f[i - 1];
+    k = k % f[i - 1];
+	4. push back the result and num.erase(num[index],1) the used element from the original string
+
+	思路：
+
+	同样先通过举例来获得更好的理解。以n = 4，k = 9为例：
+
+	1234
+	1243
+	1324
+	1342
+	1423
+	1432
+	2134
+	2143
+	2314  <= k = 9
+	2341
+	2413
+	2431
+	3124
+	3142
+	3214
+	3241
+	3412
+	3421
+	4123
+	4132
+	4213
+	4231
+	4312
+	4321
+
+	最高位可以取{1, 2, 3, 4}，而每个数重复3! = 6次。所以第k=9个permutation的s[0]为{1, 2, 3, 4}中的第9/6+1 = 2个数字s[0] = 2。
+
+	而对于以2开头的6个数字而言，k = 9是其中的第k' = 9%(3!) = 3个。而剩下的数字{1, 3, 4}的重复周期为2! = 2次。所以s[1]为{1, 3, 4}中的第k'/(2!)+1 = 2个，即s[1] = 3。
+
+	对于以23开头的2个数字而言，k = 9是其中的第k'' = k'%(2!) = 1个。剩下的数字{1, 4}的重复周期为1! = 1次。所以s[2] = 1.
+
+	对于以231开头的一个数字而言，k = 9是其中的第k''' = k''/(1!)+1 = 1个。s[3] = 4
+1/23/2019
 
 Chapter 2.2 Linked List
 --->p46, #2. Add Two Numbers
@@ -364,7 +499,13 @@ side of arr[] and return count of such numbers
 	2) Now we can ignore non-positive elements and consider only the part of array which contains all positive elements. (Find the smallest positive missing number in an array that contains all positive integers.)
 	3) We traverse the array containing all positive numbers and to mark presence of an element x, we change the sign of value at index x to negative. Mark arr[i] as visited by making arr[arr[i] - 1] negative //Note that 1 is subtracted because index start from 0 and positive numbers start from 1.
 	4) We traverse the array again and print the first index which has positive value. Return the first index value at which is positive.
-way2: 
+way2: 讲解：https://www.youtube.com/watch?v=jfb72FfxWKU 
+	
+
+	a. nums[i] > 0 && nums[i] <= nums.length && nums[nums[i]-1] != nums[i] ， then swap (nums[nums[i]-1], nums[i]) //因为如果nums[i] > length, 它肯定不是我们想要的最终的结果，第一个最小值一定比length小
+	b. 以上第4步条件一定要在while中，因为可能只swap一次无法达到目的 （e.g. nums[i] = i+1）
+	c. if nums[i] != i+1, return i+1
+
 	BucketSort(arr[], n)
 	1) Create n empty buckets (Or lists).
 	2) Do following for every array element arr[i].
@@ -399,18 +540,18 @@ Way2:
 	5- If rem = 3 ,then xor will be 0.
 	
 	Number Binary-Repr  XOR-from-1-to-n
-	1         1           [0001]
-	2        10           [0011]
+	1         1           [0001]  <----- Equals to 1
+	2        10           [0011]  <----- Equals to n+1
 	3        11           [0000]  <----- We get a 0
 	4       100           [0100]  <----- Equals to n
-	5       101           [0001]
-	6       110           [0111]
+	5       101           [0001]  <----- Equals to 1
+	6       110           [0111]  <----- Equals to n+1
 	7       111           [0000]  <----- We get 0
 	8      1000           [1000]  <----- Equals to n
 	9      1001           [0001]
 	10     1010           [1011]
 	11     1011           [0000] <------ We get 0
 	12     1100           [1100] <------ Equals to n
-
+---> 
 
 

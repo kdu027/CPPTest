@@ -1,0 +1,14 @@
+How to use gdb?
+1. compile the c++ code: 
+	$ g++ -g app.cpp -o app
+2. how to debug it?
+	gdb app
+3. find the local variable values: 
+	$ info locals
+4. check break point
+	$ info b
+5. delete breakpoint
+	$ d 1 //delete first break point
+6. set values 
+	$ set var pt = &value
+	
